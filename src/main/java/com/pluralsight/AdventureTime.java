@@ -4,17 +4,17 @@ import java.util.*;
 
 public class AdventureTime
 {
-    static ArrayList<Step> adventureSteps =  loadAdventure();
+    static ArrayList<Step> adventureSteps;
     static Scanner input = new Scanner(System.in);
 
     public static void main(String[] args)
     {
         //test stuff
-        ArrayList<Step> adventureSteps = loadAdventure();
+        //ArrayList<Step> adventureSteps = loadAdventure();
 
-        Step step1 = adventureSteps.get(0);
+        //Step step1 = adventureSteps.get(0);
 
-        System.out.println(step1.getStoryText());
+        //System.out.println(step1.getStoryText());
         //end of test stuff
 
         homeScreen();
@@ -35,21 +35,48 @@ public class AdventureTime
     }
 
     public static void gameScreen(int ID)
+    //recursion here is a lot easier, no loop just use gameScreen(currentStep.getNextOption1/2ID)
+    //stop game if the next id is -1
     {
-        Step currentStep = findStep(ID);
+        //Step currentStep = findStep(ID);
+        int nextID = ID;
 
-        if(currentStep == null)
+        while(nextID != -1)
         {
-            System.out.println("\n An error occurred. The next scene was not found.");
+            Step currentStep = findStep(nextID);
+
+            if (currentStep == null)
+            {
+                System.out.println("\n An error occurred. The next scene was not found.");
+            }
+            else
+            {
+                System.out.println(currentStep.getStoryText() + "\n");
+                System.out.println("Select an option. Enter 1 or 2: ");
+                System.out.println("\n1) " + currentStep.getOption1Text());
+                System.out.println("2) " + currentStep.getOption2Text() + "\n");
+
+                String userInput = input.nextLine().strip().toLowerCase();
+
+                switch (userInput) {
+                    case "1":
+                        //System.out.println(currentStep.getOption1NextID());
+                        nextID = currentStep.getOption1NextID();
+                        break;
+
+                    case "2":
+                        //System.out.println(currentStep.getOption2NextID());
+                        nextID = currentStep.getOption2NextID();
+                        break;
+
+                    default:
+                        System.exit(0);
+                        //temporary
+                }
+            }
         }
 
-        else
-        {
-            System.out.println(currentStep.getStoryText() + "\n");
-            System.out.println("Select an option. Enter 1 or 2: ");
-            System.out.println("\n1) " + currentStep.getOption1Text());
-            System.out.println("2) " + currentStep.getOption2Text() + "\n");
-        }
+
 
     }
 
@@ -59,9 +86,10 @@ public class AdventureTime
         System.out.println("""
                 Welcome to Adventure Time.
                 --------------------------
-                Enter 1 or 2.
+                Enter 1, 2, or 3.
                 
-                1) Play game!
+                1) Play "Dark Forest"
+                2) Play "The Haunted Castle"
                 2) Exit\n""");
 
         String playerChoice = input.nextLine();
@@ -69,13 +97,18 @@ public class AdventureTime
         switch(playerChoice)
         {
             case "1":
+                adventureSteps = loadAdventure("adventure1.csv");
                 gameScreen(1);
 
             case "2":
+                adventureSteps = loadAdventure("GIVE ME THE FILE GREGOR");
+                gameScreen(1);
+
+            case "3":
                 System.exit(0);
 
             default:
-                System.out.println("PLEASE ENTER 1 OR 2!!! PLEASE!!!");
+                System.out.println("PLEASE ENTER 1 OR 2!!! PLEASE!!! OR 3.....");
                 homeScreen();
 
         }
@@ -83,11 +116,11 @@ public class AdventureTime
     }
 
 
-    public static ArrayList<Step> loadAdventure()
+    public static ArrayList<Step> loadAdventure(String adventureFile)
     {
         try
         {
-            FileReader fileReader = new FileReader("adventure1.csv");
+            FileReader fileReader = new FileReader(adventureFile);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             String line = bufferedReader.readLine();
