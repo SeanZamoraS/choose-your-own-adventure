@@ -6,6 +6,7 @@ public class AdventureTime
 {
     static ArrayList<Step> adventureSteps =  loadAdventure();
     static Scanner input = new Scanner(System.in);
+
     public static void main(String[] args)
     {
         //test stuff
@@ -20,28 +21,38 @@ public class AdventureTime
 
 
     }
-
-    public static void gameScreen(int ID)
+    public static Step findStep(int ID)
     {
-        //ArrayList<Step> adventureSteps =  loadAdventure();
-
-        for(int i = 0; i < adventureSteps.size(); i++)
+        for (int i = 0; i < adventureSteps.size(); i++)
         {
             Step currentStep = adventureSteps.get(i);
             if(currentStep.getID() == ID)
             {
-                System.out.println(currentStep.getStoryText() + "\n");
-                System.out.println("Select an option. Enter 1 or 2: ");
-                System.out.println("\n1) " + currentStep.getOption1Text());
-                System.out.println("2) " + currentStep.getOption2Text() + "\n");
-
-                String userChoice = input.nextLine();
+                return currentStep;
             }
+        }
+        return null; //shouldnt happen w/ valid ID # as of right now
+    }
 
+    public static void gameScreen(int ID)
+    {
+        Step currentStep = findStep(ID);
+
+        if(currentStep == null)
+        {
+            System.out.println("\n An error occurred. The next scene was not found.");
         }
 
+        else
+        {
+            System.out.println(currentStep.getStoryText() + "\n");
+            System.out.println("Select an option. Enter 1 or 2: ");
+            System.out.println("\n1) " + currentStep.getOption1Text());
+            System.out.println("2) " + currentStep.getOption2Text() + "\n");
+        }
 
     }
+
 
     public static void homeScreen()
     {
